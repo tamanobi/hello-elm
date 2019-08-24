@@ -50,11 +50,15 @@ type Msg
     = Increment
     | Decrement
     | DoubleDecrement
+    | DoubleIncrement
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
+        DoubleIncrement ->
+            ( model + 2, Cmd.none )
+
         Increment ->
             ( model + 1, Cmd.none )
 
@@ -71,9 +75,10 @@ update msg model =
 
 view : Model -> Browser.Document Msg
 view model =
-    { title = "abc"
+    { title = String.fromInt model
     , body =
         [ button [ onClick Increment ] [ text "+" ]
+        , button [ onClick DoubleIncrement ] [ text "+2" ]
         , div [] [ text <| String.fromInt model ]
         , button [ onClick Decrement ] [ text "-" ]
         , button [ onClick DoubleDecrement ] [ text "-2" ]
