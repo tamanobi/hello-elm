@@ -17,14 +17,13 @@ jobs:
             # fallback to using the latest cache if no exact match is found
             - v1-dependencies-
 
-      - run: npm install -g elm && elm install
+      - run: npm install --save-dev elm && elm install
       - run:
           name: Run tests
           command: elm test
 
       - save_cache:
           paths:
-            - node_modules
             - elm-stuff
           key: v1-dependencies-{{ checksum "elm.json" }}
 
