@@ -1,19 +1,32 @@
--- Press buttons to increment and decrement a counter.
---
--- Read how it works:
---   https://guide.elm-lang.org/architecture/buttons.html
---
-
-
-module Main exposing (Model, Msg(..), init, main, update, view)
+module Main exposing (Model, Msg(..), init, main, subscriptions, update, view)
 
 import Browser
+import Browser.Navigation
 import Html exposing (Html, button, div, text)
 import Html.Events exposing (onClick)
+import Url
 
 
+main : Program () Model Msg
 main =
-    Browser.sandbox { init = init, update = update, view = view }
+    Browser.application
+        { init = init
+        , onUrlChange = onUrlChange
+        , onUrlRequest = onUrlRequest
+        , subscriptions = subscriptions
+        , update = update
+        , view = view
+        }
+
+
+onUrlRequest : Browser.UrlRequest -> Msg
+onUrlRequest url =
+    Increment
+
+
+onUrlChange : Url.Url -> Msg
+onUrlChange url =
+    Increment
 
 
 
@@ -24,9 +37,9 @@ type alias Model =
     Int
 
 
-init : Model
-init =
-    0
+init : flags -> Url.Url -> Browser.Navigation.Key -> ( Model, Cmd Msg )
+init flags url key =
+    ( 0, Cmd.none )
 
 
 
@@ -36,26 +49,38 @@ init =
 type Msg
     = Increment
     | Decrement
+    | DoubleDecrement
 
 
-update : Msg -> Model -> Model
+update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         Increment ->
-            model + 1
+            ( model + 1, Cmd.none )
 
         Decrement ->
-            model - 1
+            ( model - 1, Cmd.none )
+
+        DoubleDecrement ->
+            ( model - 2, Cmd.none )
 
 
 
 -- VIEW
 
 
-view : Model -> Html Msg
+view : Model -> Browser.Document Msg
 view model =
-    div []
-        [ button [ onClick Decrement ] [ text "-" ]
-        , div [] [ text (String.fromInt model) ]
-        , button [ onClick Increment ] [ text "+" ]
+    { title = "abc"
+    , body =
+        [ button [ onClick Increment ] [ text "+" ]
+        , div [] [ text <| String.fromInt model ]
+        , button [ onClick Decrement ] [ text "-" ]
+        , button [ onClick DoubleDecrement ] [ text "-2" ]
         ]
+    }
+
+
+subscriptions : Model -> Sub Msg
+subscriptions model =
+    Sub.none
