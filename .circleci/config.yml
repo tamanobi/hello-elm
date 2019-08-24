@@ -1,0 +1,42 @@
+version: 2
+
+defaults: &defaults
+  working_directory: ~/repo
+  docker:
+    - image: circleci/node:8.9.1
+
+jobs:
+  test:
+    <<: *defaults
+    steps:
+      - checkout
+
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "elm.json" }}
+            # fallback to using the latest cache if no exact match is found
+            - v1-dependencies-
+
+      - run: npm install elm && elm install
+      - run:
+          name: Run tests
+          command: elm test
+
+      - save_cache:
+          paths:
+            - node_modules
+            - elm-stuff
+          key: v1-dependencies-{{ checksum "elm.json" }}
+
+      - persist_to_workspace:
+          root: ~/repo
+          paths: .
+
+workflows:
+  version: 2
+  only-test:
+    jobs:
+      - test:
+          filters:
+            tags:
+              only: /^v.*/
