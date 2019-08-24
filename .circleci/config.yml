@@ -17,6 +17,9 @@ jobs:
             # fallback to using the latest cache if no exact match is found
             - v1-dependencies-
 
+      - run:
+          name: clear cache before npm install
+          command: rm -rf /home/circleci/.elm && rm -rf elm-stuff/
       - run: npm install
       - run:
           name: Run tests
