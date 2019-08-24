@@ -18,6 +18,7 @@ jobs:
             - v1-dependencies-
 
       - run: rm -rf /home/circleci/.elm
+      - run: rm -rf elm-stuff
       - run: npm install
       - run:
           name: Run tests
