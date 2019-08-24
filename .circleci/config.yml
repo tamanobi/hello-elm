@@ -3,7 +3,7 @@ version: 2
 defaults: &defaults
   working_directory: ~/repo
   docker:
-    - image: ymtszw/elm_for_ci:0.19
+    - image: circleci/node:8.9.1
 
 jobs:
   test:
@@ -17,16 +17,15 @@ jobs:
             # fallback to using the latest cache if no exact match is found
             - v1-dependencies-
 
+      - run: npm install
       - run:
           name: Run tests
-          command: elm test
-      - run:
-          name: Build
-          command: elm make src/Main.elm
+          command: npm test
 
       - save_cache:
           paths:
             - elm-stuff
+            - node_modules
           key: v1-dependencies-{{ checksum "elm.json" }}
 
       - persist_to_workspace:
