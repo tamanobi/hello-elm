@@ -13,12 +13,10 @@ jobs:
 
       - restore_cache:
           keys:
-            - v1-dependencies-v2-{{ checksum "elm.json" }}
+            - v1-dependencies-{{ checksum "elm.json" }}
             # fallback to using the latest cache if no exact match is found
             - v1-dependencies-
 
-      - run: rm -rf /home/circleci/.elm
-      - run: rm -rf elm-stuff
       - run: npm install
       - run:
           name: Run tests
@@ -26,9 +24,8 @@ jobs:
 
       - save_cache:
           paths:
-            - elm-stuff
             - node_modules
-          key: v1-dependencies-v2-{{ checksum "elm.json" }}
+          key: v1-dependencies-{{ checksum "elm.json" }}
 
       - persist_to_workspace:
           root: ~/repo
